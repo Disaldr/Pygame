@@ -47,4 +47,4 @@ class Frame:
         if background:
             image = ImageTk.PhotoImage(Image.open(background).resize((self.window.width, self.window.height)), Image.ANTIALIAS)
             background_label = ttk.Label(self.frame, image=image)
-            background_label.place(x=0,y=0)
+            background_label.place(x=0,y=0 )
