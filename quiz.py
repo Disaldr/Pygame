@@ -48,3 +48,29 @@ class Frame:
             image = ImageTk.PhotoImage(Image.open(background).resize((self.window.width, self.window.height)), Image.ANTIALIAS)
             background_label = ttk.Label(self.frame, image=image)
             background_label.place(x=0,y=0 )
+
+class CreatePlayerFrame(Frame):
+    def __init__(self, window, title, background = None):
+        super().__init__(window,title,background)
+
+        # Настройка поля для ввода имени
+        name_label = ttk.Label(self.frame, text='Player name: ')
+        name_label.place(relx=0.01, rely=0.01, anchor=tk.NW)
+        self.name_filed = ttk.Entry(self.frame)
+        self.name_filed.place(relx=0.01, rely=0.05, anchor=tk.NW)
+
+        # Настройка поля для ввода возраста
+        age_label = ttk.Label(self.frame, text='Player age: ')
+        age_label.place(relx=0.01, rely=0.1, anchor=tk.NW)
+        self.age_filed = ttk.Entry(self.frame)
+        self.age_filed.place(relx=0.01, rely=0.15, anchor=tk.NW)
+
+        # Настройка поля для ввода пола
+        gender_label = ttk.Label(self.frame, text='Player gender: ')
+        gender_label.place(relx=0.01, rely=0.2, anchor=tk.NW)
+        self.gender_filed = ttk.Combobox(self.frame, value=['Male','Female'])
+        self.gender_filed.place(relx=0.01, rely=0.25, anchor=tk.NW)
+
+        # Настройка поля для ввода фото
+        photo_label = ttk.Label(self.frame, text='Player photo: ')
+        photo_label.place(relx=0.4, rely=0.01, anchor=tk.NW)
