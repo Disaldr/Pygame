@@ -16,14 +16,16 @@ class Window:
         self.display.geometry(self.size)
         self.display.resizable(0,0)
 
+        self.frames = {'create_player': CreatePlayerFrame(self, 'Create new player')}
+        self.active_frame('create_player')
+
     def start(self):
         self.display.mainloop()
 
-
-if __name__ == '__main__':
-    game = Window()
-    game.start()
-
+    def active_frame(self, frame_name):
+        frame = self.frames[frame_name]
+        frame.activate()
+        frame.change_title()
 
 class Frame:
     def __init__(self, window, title, background = None):
@@ -99,3 +101,7 @@ class CreatePlayerFrame(Frame):
         player = player_class.Player(
             self.name_filed.get(), int(self.age_filed.get()), self.gender_filed.get(), self.img_path
         )
+
+if __name__ == '__main__':
+    game = Window()
+    game.start()
