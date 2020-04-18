@@ -74,3 +74,6 @@ class CreatePlayerFrame(Frame):
         # Настройка поля для ввода фото
         photo_label = ttk.Label(self.frame, text='Player photo: ')
         photo_label.place(relx=0.4, rely=0.01, anchor=tk.NW)
+
+        self.img_path =  'images/no_photo.png'
+        photo =
