@@ -80,6 +80,13 @@ class CreatePlayerFrame(Frame):
         self.photo = ttk.Label(self.frame, image = photo)
         self.photo.place(relx=0.4,rely=0.05, anchor=tk.NW)
 
+        photo_button = ttk.Button(self.frame, text='Choose photo', command=self.choose_photo)
+        photo_button.place(relx=0.4, rely=0.65, anchor=tk.NW)
+
+        create_button = ttk.Button(self.frame, text='Create photo', command=self.create_player)
+        create_button.place(relx=0.8, rely=0.95, anchor=tk.NW)
+
+
     def choose_photo(self):
         self.img_path = filedialog.askopenfilename(
             master=self.frame, title = 'Select player photo', filetypes=(('Image files', '*.png *.jpg'),)
