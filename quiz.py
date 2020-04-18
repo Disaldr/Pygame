@@ -45,7 +45,7 @@ class Frame:
 
     def set_background_image(self, background):
         if background:
-            image = ImageTk.PhotoImage(Image.open(background).resize((self.window.width, self.window.height)), Image.ANTIALIAS)
+            image = ImageTk.PhotoImage(Image.open(background).resize((self.window.width, self.window.height), Image.ANTIALIAS))
             background_label = ttk.Label(self.frame, image=image)
             background_label.place(x=0,y=0 )
 
@@ -75,5 +75,20 @@ class CreatePlayerFrame(Frame):
         photo_label = ttk.Label(self.frame, text='Player photo: ')
         photo_label.place(relx=0.4, rely=0.01, anchor=tk.NW)
 
-        self.img_path =  'images/no_photo.png'
-        photo =
+        self.img_path = 'images/no_photo.png'
+        photo = ImageTk.PhotoImage(Image.open(self.img_path).resize((350,350), Image.ANTIALIAS))
+        self.photo = ttk.Label(self.frame, image = photo)
+        self.photo.place(relx=0.4,rely=0.05, anchor=tk.NW)
+
+    def choose_photo(self):
+        self.img_path = filedialog.askopenfilename(
+            master=self.frame, title = 'Select player photo', filetypes=(('Image files', '*.png *.jpg'),)
+        )
+        photo = ImageTk.PhotoImage(Image.open(self.img_path).resize((350,350), Image.ANTIALIAS))
+        self.photo.configure(image=photo)
+        self.photo.image = photo
+
+    def create_player(self):
+        player = player_class.Player(
+            self.name_filed.get(), int(self.age_filed.get()), self.gender_filed.get(), self.img_path
+        )
