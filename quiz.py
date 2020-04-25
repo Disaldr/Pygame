@@ -23,7 +23,7 @@ class Window:
         self.display.mainloop()
 
     def create_main_frame(self,player):
-        self.frames['main'] = MainFrame(self, "Main", player, 'question_ids','images/back.jpg')
+        self.frames['main'] = MainFrame(self, "Main", player, 'question_ids', 'images/back.jpg')
 
     def active_frame(self, frame_name):
         frame = self.frames[frame_name]
@@ -128,6 +128,26 @@ class MainFrame(Frame):
 
         player_gender = ttk.Label(self.frame, text=f'Gender: {player.gender}', width=40)
         player_gender.place(relx=0.5, rely=0.75, anchor=tk.CENTER)
+
+        self.buttons = {}
+        button_positions = [
+            (0.2, 0.85), (0.5, 0.85), (0.8, 0.85),
+            (0.2, 0.9), (0.5, 0.9), (0.8, 0.9),
+            (0.2, 0.95), (0.5, 0.95), (0.8, 0.95),
+        ]
+        for i, question_id in enumerate(question_ids):
+            position = button_positions[i]
+            rel_x, rel_y = position
+            button = ttk.Button(self.frame, text=f'Question №{question_id}', width=15)
+            button.id = question_id
+            button.bind('<Button-1>', self.show_question)
+            button.place(relx=rel_x, rely=rel_y, anchor = tk.CENTER)
+            self.buttons[question_id] = button
+
+        def show_questoin(self, event):
+            button = event.widget
+            question_id = button.id
+
 
 
 if __name__ == '__main__':
