@@ -7,37 +7,41 @@ import player_class
 
 
 class Window:
-    def __init__(self, title='Main', width = 600, height = 600):
+    def __init__(self, title='Main', width=600, height=600):
         self.width = width
         self.height = height
         self.size = f'{width}x{height}'
         self.display = tk.Tk()
         self.display.title(title)
         self.display.geometry(self.size)
-        self.display.resizable(0,0)
+        self.display.resizable(0, 0)
 
-        self.frames = {'create_player': CreatePlayerFrame(self, 'Create new player')}
+        self.frames = {'create_player': CreatePlayerFrame(self, 'Create new player', 'images/back.jpg')}
         self.active_frame('create_player')
 
     def start(self):
         self.display.mainloop()
+
+    def create_main_frame(self,player):
+        self.frames['main'] = MainFrame(self, "Main", player, 'question_ids','images/back.jpg')
 
     def active_frame(self, frame_name):
         frame = self.frames[frame_name]
         frame.activate()
         frame.change_title()
 
+
 class Frame:
-    def __init__(self, window, title, background = None):
+    def __init__(self, window, title, background=None):
         self.window = window
-        self.frame = ttk.Frame(window.display, width = window.width, height = window.height)
+        self.frame = ttk.Frame(window.display, width=window.width, height=window.height)
         self.title = title
         self.change_title()
 
         self.style = ttk.Style()
         self.style.configure('Tlabel', font=('Calibri', 14))
         self.set_background_image(background)
-        self.frame.grid(row=0,cloumn=0, sticky='nsew')
+        self.frame.grid(row=0, column=0, sticky='nsew')
 
     def activate(self):
         self.frame.tkraise()
@@ -47,13 +51,16 @@ class Frame:
 
     def set_background_image(self, background):
         if background:
-            image = ImageTk.PhotoImage(Image.open(background).resize((self.window.width, self.window.height), Image.ANTIALIAS))
+            image = ImageTk.PhotoImage(
+                Image.open(background).resize((self.window.width, self.window.height), Image.ANTIALIAS))
             background_label = ttk.Label(self.frame, image=image)
-            background_label.place(x=0,y=0 )
+            background_label.image = image
+            background_label.place(x=0, y=0, relwidth=1, relheight=1)
+
 
 class CreatePlayerFrame(Frame):
-    def __init__(self, window, title, background = None):
-        super().__init__(window,title,background)
+    def __init__(self, window, title, background=None):
+        super().__init__(window, title, background)
 
         # Настройка поля для ввода имени
         name_label = ttk.Label(self.frame, text='Player name: ')
@@ -70,7 +77,7 @@ class CreatePlayerFrame(Frame):
         # Настройка поля для ввода пола
         gender_label = ttk.Label(self.frame, text='Player gender: ')
         gender_label.place(relx=0.01, rely=0.2, anchor=tk.NW)
-        self.gender_filed = ttk.Combobox(self.frame, value=['Male','Female'])
+        self.gender_filed = ttk.Combobox(self.frame, value=['Male', 'Female'])
         self.gender_filed.place(relx=0.01, rely=0.25, anchor=tk.NW)
 
         # Настройка поля для ввода фото
@@ -78,22 +85,22 @@ class CreatePlayerFrame(Frame):
         photo_label.place(relx=0.4, rely=0.01, anchor=tk.NW)
 
         self.img_path = 'images/no_photo.png'
-        photo = ImageTk.PhotoImage(Image.open(self.img_path).resize((350,350), Image.ANTIALIAS))
-        self.photo = ttk.Label(self.frame, image = photo)
-        self.photo.place(relx=0.4,rely=0.05, anchor=tk.NW)
+        photo = ImageTk.PhotoImage(Image.open(self.img_path).resize((350, 350), Image.ANTIALIAS))
+        self.photo = ttk.Label(self.frame, image=photo)
+        self.photo.image = photo
+        self.photo.place(relx=0.4, rely=0.05, anchor=tk.NW)
 
         photo_button = ttk.Button(self.frame, text='Choose photo', command=self.choose_photo)
         photo_button.place(relx=0.4, rely=0.65, anchor=tk.NW)
 
-        create_button = ttk.Button(self.frame, text='Create photo', command=self.create_player)
+        create_button = ttk.Button(self.frame, text='Create player', command=self.create_player)
         create_button.place(relx=0.8, rely=0.95, anchor=tk.NW)
-
 
     def choose_photo(self):
         self.img_path = filedialog.askopenfilename(
-            master=self.frame, title = 'Select player photo', filetypes=(('Image files', '*.png *.jpg'),)
+            master=self.frame, title='Select player photo', filetypes=(('Image files', '*.png *.jpg'),)
         )
-        photo = ImageTk.PhotoImage(Image.open(self.img_path).resize((350,350), Image.ANTIALIAS))
+        photo = ImageTk.PhotoImage(Image.open(self.img_path).resize((350, 350), Image.ANTIALIAS))
         self.photo.configure(image=photo)
         self.photo.image = photo
 
@@ -101,6 +108,27 @@ class CreatePlayerFrame(Frame):
         player = player_class.Player(
             self.name_filed.get(), int(self.age_filed.get()), self.gender_filed.get(), self.img_path
         )
+        self.window.create_main_frame(player)
+        self.window.active_frame('main')
+
+
+class MainFrame(Frame):
+    def __init__(self, window, title, player, question_ids, background_image=None):
+        super().__init__(window, title, background_image)
+
+        photo = ImageTk.PhotoImage(Image.open(player.img_path).resize((300, 300), Image.ANTIALIAS))
+        player_photo = ttk.Label(self.frame, image=photo)
+        player_photo.place(relx=0.5, rely=0.4, anchor=tk.CENTER)
+
+        player_name = ttk.Label(self.frame, text=f'Name: {player.name}', width=40)
+        player_name.place(relx=0.5, rely=0.65, anchor=tk.CENTER)
+
+        player_age = ttk.Label(self.frame, text=f'Age: {player.age}', width=40)
+        player_age.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
+
+        player_gender = ttk.Label(self.frame, text=f'Gender: {player.gender}', width=40)
+        player_gender.place(relx=0.5, rely=0.75, anchor=tk.CENTER)
+
 
 if __name__ == '__main__':
     game = Window()
