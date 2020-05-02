@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
+import json
+import random
 from PIL import Image, ImageTk
 
 import player_class
@@ -16,19 +18,37 @@ class Window:
         self.display.geometry(self.size)
         self.display.resizable(0, 0)
 
+        self.question_frames = self.create_question_frames()
         self.frames = {'create_player': CreatePlayerFrame(self, 'Create new player', 'images/back.jpg')}
+
+        self.frames.update(self.question_frames)
         self.active_frame('create_player')
 
     def start(self):
         self.display.mainloop()
 
-    def create_main_frame(self,player):
-        self.frames['main'] = MainFrame(self, "Main", player, 'question_ids', 'images/back.jpg')
+    def create_main_frame(self, player):
+        self.frames['main'] = MainFrame(self, "Main", player, self.question_frames.keys(), 'images/back.jpg')
 
     def active_frame(self, frame_name):
         frame = self.frames[frame_name]
         frame.activate()
         frame.change_title()
+
+    def create_question_frames(self):
+        question_frames = dict()
+
+        file = open('questions.json', 'r', encoding='utf-8')
+        questions = json.load(file)
+        file.close()
+
+        random.shuffle(questions)
+        for question_id, question in enumerate(questions, 1):
+            question_frames[question_id] = QuestionFrame(
+                self, question_id, question['question'],
+                question['answers'], question['img_path'], 'images/back.jpg'
+            )
+        return question_frames
 
 
 class Frame:
@@ -116,9 +136,12 @@ class MainFrame(Frame):
     def __init__(self, window, title, player, question_ids, background_image=None):
         super().__init__(window, title, background_image)
 
+        # question_ids = ['История', 'Математика', 'Герои']
+
         photo = ImageTk.PhotoImage(Image.open(player.img_path).resize((300, 300), Image.ANTIALIAS))
         player_photo = ttk.Label(self.frame, image=photo)
-        player_photo.place(relx=0.5, rely=0.4, anchor=tk.CENTER)
+        player_photo.image = photo
+        player_photo.place(relx=0.5, rely=0.35, anchor=tk.CENTER)
 
         player_name = ttk.Label(self.frame, text=f'Name: {player.name}', width=40)
         player_name.place(relx=0.5, rely=0.65, anchor=tk.CENTER)
@@ -138,16 +161,29 @@ class MainFrame(Frame):
         for i, question_id in enumerate(question_ids):
             position = button_positions[i]
             rel_x, rel_y = position
-            button = ttk.Button(self.frame, text=f'Question №{question_id}', width=15)
+            button = ttk.Button(self.frame, text=f'Question №{i + 1}', width=15)
             button.id = question_id
             button.bind('<Button-1>', self.show_question)
-            button.place(relx=rel_x, rely=rel_y, anchor = tk.CENTER)
+            button.place(relx=rel_x, rely=rel_y, anchor=tk.CENTER)
             self.buttons[question_id] = button
 
-        def show_questoin(self, event):
-            button = event.widget
-            question_id = button.id
+    def show_question(self, event):
+        button = event.widget
+        question_id = button.id
+        self.window.active_frame(question_id)
 
+
+class QuestionFrame(Frame):
+    def __init__(self, window, question_id, question, answers, img_path, background=None):
+        title = f'Question №{question_id}'
+
+        super().__init__(window, title, background)
+
+        back_button = ttk.Button(self.frame, text="Back", command=self.go_back)
+        back_button.place(relx=0.5, rely=0.95, anchor=tk.CENTER)
+
+    def go_back(self):
+        self.window.active_frame('main')
 
 
 if __name__ == '__main__':
