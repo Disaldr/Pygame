@@ -7,6 +7,15 @@ from PIL import Image, ImageTk
 
 import player_class
 
+CreatePlayerFrameBackgroundPath = 'images/back.jpg'
+MainFrameBackgroundPath = 'images/back.jpg'
+QuestionFrameBackgroundPath = 'images/back.jpg'
+NoPhotoPath = 'images/no_photo.png'
+NoImagePath = 'images/no_photo.png'
+CorrectImagePath = 'images/correct.png'
+IncorrectImagePath = 'images/incorrect.png'
+
+
 
 class Window:
     def __init__(self, title='Main', width=600, height=600):
@@ -178,6 +187,13 @@ class QuestionFrame(Frame):
         title = f'Question №{question_id}'
 
         super().__init__(window, title, background)
+
+
+        img_path = img_path if img_path else NoImagePath
+        question_img = ImageTk.PhotoImage(Image.open(img_path).resize((300, 300), Image.ANTIALIAS))
+        question_image = ttk.Label(self.frame, image=question_img)
+        question_image.image = question_img
+        question_image.place(relx=0.5, rely=0.3, anchor=tk.CENTER)
 
         back_button = ttk.Button(self.frame, text="Back", command=self.go_back)
         back_button.place(relx=0.5, rely=0.95, anchor=tk.CENTER)

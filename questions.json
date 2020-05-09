@@ -1,0 +1,27 @@
+[
+  {
+    "question": "Градусная мера прямого угла?",
+    "answers": {"100": 0, "90": 1, "60": 0, "15": 0},
+    "img_path": "images/1.jpeg"
+  },
+  {
+    "question": "",
+    "answers": {"A": 0, "B": 1, "C": 0, "D": 0},
+    "img_path": null
+  },
+  {
+    "question": "",
+    "answers": {"A": 0, "B": 1, "C": 0, "D": 0},
+    "img_path": null
+  },
+  {
+    "question": "",
+    "answers": {"A": 0, "B": 1, "C": 0, "D": 0},
+    "img_path": null
+  },
+  {
+    "question": "",
+    "answers": {"A": 0, "B": 1, "C": 0, "D": 0},
+    "img_path": null
+  }
+]
