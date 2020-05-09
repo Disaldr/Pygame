@@ -195,8 +195,32 @@ class QuestionFrame(Frame):
         question_image.image = question_img
         question_image.place(relx=0.5, rely=0.3, anchor=tk.CENTER)
 
+        self.id = question_id
+
+        question_text = ttk.Label(
+            self.frame, text=question, border=2, relief=tk.SUNKEN, justify=tk.CENTER, wraplength=550
+        )
+        question_text.place(relx=0.5, rely=0.65, anchor=tk.CENTER)
+
+
         back_button = ttk.Button(self.frame, text="Back", command=self.go_back)
         back_button.place(relx=0.5, rely=0.95, anchor=tk.CENTER)
+
+        self.buttons = self.create_buttons(answers)
+
+    def create_buttons(self, answers):
+        answers_values = list(answers.items())
+        random.shuffle(answers_values)
+        places = [(0.2, 0.8), (0.8, 0.8), (0.2, 0.9), (0.8, 0.9)]
+        buttons = list()
+        for index, answers_values in enumerate(answers_values):
+            answer, value = answers_values
+            rel_x, rel_y = places[index]
+            button = ttk.Button(self.frame, text=answer, width=20)
+            button.id = value
+            button.place(relx=rel_x, rely=rel_y, anchor=tk.CENTER)
+            buttons.append(button)
+        return buttons
 
     def go_back(self):
         self.window.active_frame('main')
