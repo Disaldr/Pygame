@@ -207,6 +207,8 @@ class QuestionFrame(Frame):
         back_button.place(relx=0.5, rely=0.95, anchor=tk.CENTER)
 
         self.buttons = self.create_buttons(answers)
+        self.correct_img = ImageTk.PhotoImage(Image.open(CorrectImagePath).resize((17,17), Image.ANTIALIAS))
+        self.incorrect_img = ImageTk.PhotoImage(Image.open(IncorrectImagePath).resize((17, 17), Image.ANTIALIAS))
 
     def create_buttons(self, answers):
         answers_values = list(answers.items())
@@ -218,10 +220,18 @@ class QuestionFrame(Frame):
             rel_x, rel_y = places[index]
             button = ttk.Button(self.frame, text=answer, width=20)
             button.id = value
+            button.bind('<Button-1>', self.check)
             button.place(relx=rel_x, rely=rel_y, anchor=tk.CENTER)
             buttons.append(button)
         return buttons
 
+    def check(self, event):
+        button = event.widget
+        if button.id:
+            button.configure(image=self.correct_img, compound=tk.LEFT)
+        else:
+            button.configure(image=self.incorrect_img, compound=tk.LEFT)
+        # self.go_back()
     def go_back(self):
         self.window.active_frame('main')
 
